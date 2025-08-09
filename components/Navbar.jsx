@@ -1,29 +1,40 @@
 
-import React from "react";
-import { useParams } from "react-router-dom";
-import { posts } from "../lib/posts";
+//imports React, Link from react-router-dom for navigation links, and a custom useAuth hook from your authentication context
 
-//Uses useParams from React Router to get the slug from the URL
+import React from "react" ;
+import {Link} from "react-router-dom";
+import {useAuth} from "../context/AuthContext"
 
-export default function BlogPost() {
-  const { slug } = useParams();
+// component calls useAuth() to get two values: isAuthenticated(a boolean indicating if the user is logged in or not.)
 
-  // find the post by using matching slug
+// logout: a function to log the user out.
 
-  const post = posts.find((p) => p.slug === slug);
+export default function Navbar() {
 
-  //no matching post return- post not found
+  const {isAuthenticated , logout} = useAuth();
 
-  if (!post) {
-    return <h2> Post not found</h2>;
-  }
+  // jsx will render - 1. //  a link to blog page(/blog)
 
-  //return JSX
+  //2. is NOT authenticated (!isAuthenticated):
 
-  return (
-    <post>
-      <h1>{post.title}</h1>
-      <p>{post.content}</p>
-    </post>
+  // If not logged in, it shows a Log In link that navigates to the /login page.
+  // 3. if logged in - shows log out button, on click calls log out function
+  // 4. link to admin page
+  return(
+    <nav>
+      <Link to={"/blog"}> Blog</Link> {"|"}  
+
+
+      {!isAuthenticated ? (
+        <Link to={"/login"}> Log In </Link>
+     ) : (
+      <>
+       <button onClick={logout}> Log Out </button> {"|"}
+
+       <Link to={"/admin"}>Admin</Link>
+      </>
+     )}
+
+    </nav>
   );
 }
